@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nuestro Amor 💕</title>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600;700&family=Playfair+Display:ital@1&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    min-height: 100vh;
+    background: #f5ede3;
+    background-image: 
+      radial-gradient(circle at 20% 20%, #fce4ec 0%, transparent 50%),
+      radial-gradient(circle at 80% 80%, #e8d5f0 0%, transparent 50%),
+      radial-gradient(circle at 50% 50%, #fef9f0 0%, transparent 70%);
+    font-family: 'Caveat', cursive;
+    padding: 40px 20px 60px;
+    overflow-x: hidden;
+  }
+
+  #bg-video {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.18;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  header {
+    text-align: center;
+    margin-bottom: 50px;
+    position: relative;
+    z-index: 1;
+  }
+
+  header h1 {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: clamp(2rem, 6vw, 3.5rem);
+    color: #8b4566;
+    letter-spacing: 2px;
+    text-shadow: 2px 2px 0px #fce4ec;
+  }
+
+  header p {
+    font-size: 1.3rem;
+    color: #b07090;
+    margin-top: 8px;
+  }
+
+  .board {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 30px 20px;
+    max-width: 1100px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+  }
+
+  .polaroid {
+    background: #fff;
+    padding: 14px 14px 50px;
+    box-shadow: 
+      0 4px 15px rgba(0,0,0,0.12),
+      0 1px 3px rgba(0,0,0,0.08),
+      inset 0 0 0 1px rgba(0,0,0,0.03);
+    transform: rotate(var(--rot)) translateY(20px);
+    opacity: 0;
+    animation: floatIn 0.6s ease forwards;
+    animation-delay: var(--delay);
+    width: 240px;
+    flex-shrink: 0;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+    position: relative;
+  }
+
+  .polaroid::before {
+    content: '';
+    position: absolute;
+    top: -6px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 30px;
+    height: 14px;
+    background: rgba(200,160,180,0.35);
+    border-radius: 2px;
+  }
+
+  .polaroid:hover {
+    transform: rotate(0deg) translateY(-8px) scale(1.04);
+    box-shadow: 
+      0 20px 40px rgba(0,0,0,0.18),
+      0 5px 15px rgba(139,69,102,0.15);
+    z-index: 10;
+  }
+
+  @keyframes floatIn {
+    to {
+      opacity: 1;
+      transform: rotate(var(--rot)) translateY(0);
+    }
+  }
+
+  .photo-wrap {
+    width: 100%;
+    height: 220px;
+    overflow: hidden;
+    background: #f0e6ea;
+  }
+
+  .photo-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center top;
+    display: block;
+  }
+
+  .caption {
+    margin-top: 10px;
+    text-align: center;
+    font-size: 1.15rem;
+    color: #7a4060;
+    line-height: 1.4;
+    font-weight: 600;
+  }
+
+  footer {
+    text-align: center;
+    margin-top: 60px;
+    color: #c09090;
+    font-size: 1rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  @media (max-width: 600px) {
+    .polaroid { width: 180px; }
+    .photo-wrap { height: 170px; }
+  }
+
+  /* ── Overlay ── */
+  #overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(20, 0, 10, 0.75);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.8s ease;
+  }
+  #overlay.hidden {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  /* ── Corazón SVG ── */
+  #big-heart {
+    position: absolute;
+    width: 180px;
+    height: 180px;
+    transform: scale(0);
+    animation: heartPop 1s cubic-bezier(0.34, 1.56, 0.64, 1) 0.3s forwards;
+    filter: drop-shadow(0 0 40px #ff4d7d) drop-shadow(0 0 80px #ff4d7d88);
+  }
+  #big-heart path {
+    fill: #ff4d7d;
+  }
+
+  @keyframes heartPop {
+    0%   { transform: scale(0); }
+    60%  { transform: scale(1.15); }
+    80%  { transform: scale(0.95); }
+    100% { transform: scale(1); }
+  }
+
+  #big-heart.explode {
+    animation: heartExplode 0.5s ease forwards;
+  }
+  @keyframes heartExplode {
+    0%   { transform: scale(1); opacity: 1; }
+    100% { transform: scale(2.5); opacity: 0; }
+  }
+
+  /* ── Canvas partículas ── */
+  #canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+  }
+</style>
+</head>
+<body>
+
+<!-- Video de fondo -->
+<video id="bg-video" autoplay muted loop playsinline>
+  <source src="videoA.mp4" type="video/mp4">
+</video>
+
+<!-- Audio -->
+<audio id="musica" src="cancionB.mp3" loop></audio>
+
+<!-- Overlay con corazón y partículas -->
+<div id="overlay">
+  <canvas id="canvas"></canvas>
+  <svg id="big-heart" viewBox="0 0 100 90" xmlns="http://www.w3.org/2000/svg">
+    <path d="M50 85 C50 85 5 55 5 28 C5 12 17 2 30 2 C38 2 45 6 50 13 C55 6 62 2 70 2 C83 2 95 12 95 28 C95 55 50 85 50 85Z"/>
+  </svg>
+</div>
+
+<header>
+  <h1>Momentos bonitos ✨</h1>
+  <p>para recordar siempre 🌸</p>
+</header>
+
+<div class="board">
+
+  <div class="polaroid" style="--rot: -3deg; --delay: 0s">
+    <div class="photo-wrap">
+      <img src="foto1.jpg" alt="foto 1">
+    </div>
+    <div class="caption">🌸<br>siempre juntos
+    <p>Porque nuestro amor es infinito y único</p></div>
+  </div>
+
+  <div class="polaroid" style="--rot: 2deg; --delay: 0.15s">
+    <div class="photo-wrap">
+      <img src="foto2.png" alt="foto 2">
+    </div>
+    <div class="caption">eres mi lugar favorito 🐾</div>
+  </div>
+
+  <div class="polaroid" style="--rot: -2deg; --delay: 0.3s">
+    <div class="photo-wrap">
+      <img src="foto3.jpg" alt="foto 3">
+    </div>
+    <div class="caption">tú eres mi todo 🖤</div>
+  </div>
+
+  <div class="polaroid" style="--rot: 4deg; --delay: 0.45s">
+    <div class="photo-wrap">
+      <img src="foto4.png" alt="foto 4">
+    </div>
+    <div class="caption">hecho con amor para ti 🐱</div>
+  </div>
+
+  <div class="polaroid" style="--rot: -1deg; --delay: 0.6s">
+    <div class="photo-wrap">
+      <img src="foto5.jpg" alt="foto 5">
+    </div>
+    <div class="caption">sonríes y el mundo brilla ✨</div>
+  </div>
+
+  <div class="polaroid" style="--rot: 3deg; --delay: 0.75s">
+    <div class="photo-wrap">
+      <img src="foto6.jpg" alt="foto 6">
+    </div>
+    <div class="caption">eres preciosa, siempre 💕</div>
+  </div>
+
+</div>
+
+<footer>hecho con mucho amor 💕</footer>
+
+<script>
+  const audio   = document.getElementById('musica');
+  const overlay = document.getElementById('overlay');
+  const heart   = document.getElementById('big-heart');
+  const canvas  = document.getElementById('canvas');
+  const ctx     = canvas.getContext('2d');
+
+  function resizeCanvas() {
+    canvas.width  = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  resizeCanvas();
+  window.addEventListener('resize', resizeCanvas);
+
+  const COLORS = ['#ff4d7d','#ff85a1','#ffb3c6','#ff1a5e','#ff6699','#ffcce0','#c2185b','#f48fb1'];
+  let particles = [];
+
+  function heartPoint(t, cx, cy, size) {
+    const x = size * 16 * Math.pow(Math.sin(t), 3);
+    const y = -size * (13*Math.cos(t) - 5*Math.cos(2*t) - 2*Math.cos(3*t) - Math.cos(4*t));
+    return { x: cx + x, y: cy + y };
+  }
+
+  function spawnParticles() {
+    const cx = canvas.width  / 2;
+    const cy = canvas.height / 2;
+    const count = 220;
+    for (let i = 0; i < count; i++) {
+      const t = (i / count) * Math.PI * 2;
+      const origin = heartPoint(t, cx, cy, 9);
+      const angle  = Math.atan2(origin.y - cy, origin.x - cx) + (Math.random() - 0.5) * 1.2;
+      const speed  = 3 + Math.random() * 7;
+      particles.push({
+        x: origin.x, y: origin.y,
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed,
+        size: 3 + Math.random() * 6,
+        color: COLORS[Math.floor(Math.random() * COLORS.length)],
+        alpha: 1,
+        decay: 0.012 + Math.random() * 0.015,
+        gravity: 0.15 + Math.random() * 0.1,
+        isHeart: Math.random() > 0.5
+      });
+    }
+  }
+
+  function drawHeart(ctx, x, y, size, color, alpha) {
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    ctx.fillStyle = color;
+    ctx.beginPath();
+    ctx.translate(x, y);
+    const s = size / 16;
+    ctx.moveTo(0, -4 * s);
+    ctx.bezierCurveTo(4*s, -8*s, 10*s, -2*s, 0, 4*s);
+    ctx.bezierCurveTo(-10*s, -2*s, -4*s, -8*s, 0, -4*s);
+    ctx.fill();
+    ctx.restore();
+  }
+
+  let animating = false;
+  function animateParticles() {
+    if (!animating) return;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    particles = particles.filter(p => p.alpha > 0);
+    if (particles.length === 0) {
+      animating = false;
+      overlay.classList.add('hidden');
+      return;
+    }
+    for (const p of particles) {
+      p.x  += p.vx;
+      p.y  += p.vy;
+      p.vy += p.gravity;
+      p.vx *= 0.98;
+      p.alpha -= p.decay;
+      if (p.isHeart) {
+        drawHeart(ctx, p.x, p.y, p.size, p.color, Math.max(0, p.alpha));
+      } else {
+        ctx.save();
+        ctx.globalAlpha = Math.max(0, p.alpha);
+        ctx.fillStyle   = p.color;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size / 2, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      }
+    }
+    requestAnimationFrame(animateParticles);
+  }
+
+  function startSequence() {
+    setTimeout(() => {
+      heart.classList.add('explode');
+      spawnParticles();
+      animating = true;
+      animateParticles();
+    }, 1500);
+  }
+
+  function tryPlay() {
+    audio.play().then(() => {
+      startSequence();
+    }).catch(() => {});
+  }
+
+  tryPlay();
+
+  const unlock = () => {
+    audio.play().then(() => {
+      startSequence();
+      document.removeEventListener('click',      unlock);
+      document.removeEventListener('touchstart', unlock);
+    }).catch(() => {});
+  };
+
+  if (audio.paused) {
+    document.addEventListener('click',      unlock);
+    document.addEventListener('touchstart', unlock);
+  }
+</script>
+
+</body>
+</html>
